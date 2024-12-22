@@ -30,7 +30,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({ task }) => {
           title,
           color,
         });
-        console.log(color);
       } else {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
           title,

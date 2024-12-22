@@ -6,7 +6,6 @@ export default async function EditTaskPage({
   params: { id: string };
 }) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/tasks/${params.id}`;
-  console.log("Fetching task from:", url);
 
   const res = await fetch(url);
 

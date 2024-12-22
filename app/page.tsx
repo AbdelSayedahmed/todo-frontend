@@ -21,7 +21,6 @@ export default function Home() {
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tasks`);
         setTasks(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -74,9 +73,10 @@ export default function Home() {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className={`flex justify-between p-6 border rounded-md shadow-lg ${
-              task.completed ? "bg-green-100" : `bg-[${task.color}]`
-            } transition-all duration-300`}
+            style={{
+              backgroundColor: task.completed ? "lightgreen" : task.color,
+            }}
+            className={`flex justify-between p-6 border rounded-md shadow-lg transition-all duration-300`}
           >
             <div className="flex items-center space-x-4">
               <input
@@ -107,5 +107,3 @@ export default function Home() {
     </div>
   );
 }
-
-Home;
