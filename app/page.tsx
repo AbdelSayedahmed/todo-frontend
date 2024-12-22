@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; 
 
 interface Task {
   id: number;
@@ -11,13 +12,14 @@ interface Task {
   completed: boolean;
 }
 
-const Home = () => {
+export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/tasks");
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tasks`);
         setTasks(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -29,7 +31,7 @@ const Home = () => {
 
   const toggleCompleted = async (id: number, completed: boolean) => {
     try {
-      await axios.put(`http://localhost:5000/tasks/${id}`, {
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
         completed: !completed,
       });
       setTasks(
@@ -45,8 +47,9 @@ const Home = () => {
   const deleteTask = async (id: number) => {
     if (confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`http://localhost:5000/tasks/${id}`);
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`);
         setTasks(tasks.filter((task) => task.id !== id));
+        router.push("/"); 
       } catch (error) {
         console.error("Error deleting task:", error);
       }
@@ -68,8 +71,9 @@ const Home = () => {
       </Link>
       <ul className="w-full max-w-3xl space-y-4">
         {tasks.map((task) => (
-          <li
+          <Link
             key={task.id}
+            href={`/edit/${task.id}`}
             className={`flex items-center justify-between p-6 border rounded-md shadow-lg ${
               task.completed ? "bg-green-100" : "bg-white"
             } transition-all duration-300`}
@@ -98,18 +102,12 @@ const Home = () => {
               >
                 Delete
               </button>
-              <Link
-                href={`/edit/${task.id}`}
-                className="text-blue-500 hover:text-blue-700"
-              >
-                Edit
-              </Link>
             </div>
-          </li>
+          </Link>
         ))}
       </ul>
     </div>
   );
-};
+}
 
-export default Home;
+Home;

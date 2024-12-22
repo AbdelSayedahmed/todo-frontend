@@ -4,25 +4,48 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-const CreateTask = () => {
-  const [title, setTitle] = useState("");
-  const [color, setColor] = useState("red");
+interface Task {
+  id: number;
+  title: string;
+  color: string;
+  completed: boolean;
+}
+
+interface CreateTaskProps {
+  task?: Task;
+}
+
+const CreateTask: React.FC<CreateTaskProps> = ({ task }) => {
+  const [title, setTitle] = useState(task?.title || "");
+  const [color, setColor] = useState(task?.color || "red");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/tasks", { title, color });
+      if (task) {
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${task.id}`, {
+          title,
+          color,
+        });
+      } else {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
+          title,
+          color,
+        });
+      }
       router.push("/");
     } catch (error) {
-      console.error("Error creating task:", error);
+      console.error("Error creating or updating task:", error);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-6">Create Task</h1>
+      <h1 className="text-4xl font-bold text-gray-800 mb-6">
+        {task ? "Edit Task" : "Create Task"}
+      </h1>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-lg space-y-6 bg-white p-8 rounded-md shadow-lg"
@@ -65,7 +88,7 @@ const CreateTask = () => {
           type="submit"
           className="bg-blue-500 text-white px-6 py-3 rounded-md w-full hover:bg-blue-600 transition-all duration-300"
         >
-          Create Task
+          {task ? "Update Task" : "Create Task"}
         </button>
       </form>
     </div>
