@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 interface Task {
   id: number;
@@ -17,7 +18,7 @@ interface CreateTaskProps {
 
 const CreateTask: React.FC<CreateTaskProps> = ({ task }) => {
   const [title, setTitle] = useState(task?.title || "");
-  const [color, setColor] = useState(task?.color || "red");
+  const [color, setColor] = useState(task?.color || "#e88279");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,6 +30,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ task }) => {
           title,
           color,
         });
+        console.log(color);
       } else {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
           title,
@@ -79,17 +81,22 @@ const CreateTask: React.FC<CreateTaskProps> = ({ task }) => {
             onChange={(e) => setColor(e.target.value)}
             className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
+            <option value="#e88279">Red</option>
+            <option value="#79bae8">Blue</option>
+            <option value="#7be879">Green</option>
           </select>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-6 py-3 rounded-md w-full hover:bg-blue-600 transition-all duration-300"
-        >
-          {task ? "Update Task" : "Create Task"}
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-3 rounded-md w-full hover:bg-blue-600 transition-all duration-300"
+          >
+            {task ? "Update Task" : "Create Task"}
+          </button>
+          <div className="bg-[#656666] text-white text-center px-6 py-3 rounded-md w-full hover:bg-[#86898a] transition-all duration-300">
+            <Link href="/">Cancel</Link>
+          </div>
+        </div>
       </form>
     </div>
   );

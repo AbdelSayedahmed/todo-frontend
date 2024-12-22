@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 interface Task {
   id: number;
@@ -21,6 +21,7 @@ export default function Home() {
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tasks`);
         setTasks(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -49,7 +50,7 @@ export default function Home() {
       try {
         await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`);
         setTasks(tasks.filter((task) => task.id !== id));
-        router.push("/"); 
+        router.push("/");
       } catch (error) {
         console.error("Error deleting task:", error);
       }
@@ -71,11 +72,10 @@ export default function Home() {
       </Link>
       <ul className="w-full max-w-3xl space-y-4">
         {tasks.map((task) => (
-          <Link
+          <div
             key={task.id}
-            href={`/edit/${task.id}`}
-            className={`flex items-center justify-between p-6 border rounded-md shadow-lg ${
-              task.completed ? "bg-green-100" : "bg-white"
+            className={`flex justify-between p-6 border rounded-md shadow-lg ${
+              task.completed ? "bg-green-100" : `bg-[${task.color}]`
             } transition-all duration-300`}
           >
             <div className="flex items-center space-x-4">
@@ -92,18 +92,16 @@ export default function Home() {
                     : "text-gray-900"
                 }`}
               >
-                {task.title}
+                <Link href={`/edit/${task.id}`}>{task.title}</Link>
               </span>
             </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-300"
-              >
-                Delete
-              </button>
-            </div>
-          </Link>
+            <button
+              onClick={() => deleteTask(task.id)}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-300"
+            >
+              Delete
+            </button>
+          </div>
         ))}
       </ul>
     </div>
