@@ -59,10 +59,15 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-6">
       <h1 className="text-4xl font-bold text-gray-800 mb-6">Todo List</h1>
-      <p className="text-lg text-gray-600 mb-6">
-        Tasks: {tasks.length} | Completed:{" "}
-        {tasks.filter((task) => task.completed).length} of {tasks.length}
-      </p>
+      <div className="flex mb-4">
+        <p className="text-lg text-gray-600 border border-gray-400 rounded-l-[15px] px-[10px] py-[6px]">
+          Tasks: {tasks.length}
+        </p>
+        <p className="text-lg text-gray-600 border border-gray-400 rounded-r-[15px] border-l-0 px-[10px] py-[6px]">
+          Completed: {tasks.filter((task) => task.completed).length} of{" "}
+          {tasks.length}
+        </p>
+      </div>
       <Link
         href="/create"
         className="bg-blue-500 text-white px-6 py-3 rounded-md mb-6 hover:bg-blue-600 transition-all duration-300"
